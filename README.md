@@ -80,14 +80,14 @@ Automates provisioning of:
 - EKS Cluster  
 - S3 bucket & DynamoDB for state management
 
-📄 [Terraform README](https://github.com/I-am-nk/ultimate-devops-project-terraform/blob/main/README.md)
+📄 [Terraform README](https://github.com/iam-rajeshmrk/ultimate-devops-project-terraform/blob/main/README.md)
 
 ---
 ### 🐳 Docker Compose
 - Runs the project locally with a single `docker-compose.yml` file.  
 - Helps test the application before deploying.
 
-📄 [Docker Compose README](https://github.com/I-am-nk/ultimate-devops-project-demo/blob/main/local-setup-readme.md)
+📄 [Docker Compose README](https://github.com/iam-rajeshmrk/ultimate-devops-project-demo/blob/main/local-setup-readme.md)
 
 ---
 ### ☸️ Kubernetes (Container Orchestration)
@@ -113,13 +113,13 @@ Defines the pipeline with:
 - Code quality checks  
 - Kubernetes manifest updates
 
-📄 [Github Actions README →](https://github.com/I-am-nk/ultimate-devops-project-demo/blob/main/GitHub%20Actions%20Readme.md))
+📄 [Github Actions README →](https://github.com/iam-rajeshmrk/ultimate-devops-project-demo/blob/main/GitHub%20Actions%20Readme.md))
 
 ---
 
 ## 👨‍💻 Author
-**Nandkishor Khandare**  
+**Mothukuri RajeshKumar**  
 Cloud & DevOps / SRE Engineer  
 
 ## 📬 **Contact**: 
-[LinkedIn](https://www.linkedin.com/in/nandkishor-khandare-616492215/) | [Email](nandkishor.k6e@gmail.com) | [Twitter (X)](https://x.com/devops_nk)
+[LinkedIn](https://www.linkedin.com/in/mothukurirajeshkumar) | [Email](mothukurirajeshkumar@gmail.com) 
