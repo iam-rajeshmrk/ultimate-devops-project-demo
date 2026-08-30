@@ -1,141 +1,125 @@
-**Note:** This project is a fork of `opentelemetry-demo`. Thanks to the team and contributors for opensourcing this wonderful demo project. Definitely one of the best on internet.
+# End-to-End DevOps Project on AWS with CI/CD Pipeline
 
-<!-- markdownlint-disable-next-line -->
-# <img src="https://opentelemetry.io/img/logos/opentelemetry-logo-nav.png" alt="OTel logo" width="45"> OpenTelemetry Demo
+This project demonstrates a comprehensive **end-to-end CI/CD infrastructure** for a containerized application.  
+It leverages **Terraform** for AWS infrastructure provisioning, **GitHub Actions** for continuous integration, and **ArgoCD** for GitOps-based continuous deployment on a Kubernetes cluster.
 
-[![Slack](https://img.shields.io/badge/slack-@cncf/otel/demo-brightgreen.svg?logo=slack)](https://cloud-native.slack.com/archives/C03B4CWV4DA)
-[![Version](https://img.shields.io/github/v/release/open-telemetry/opentelemetry-demo?color=blueviolet)](https://github.com/open-telemetry/opentelemetry-demo/releases)
-[![Commits](https://img.shields.io/github/commits-since/open-telemetry/opentelemetry-demo/latest?color=ff69b4&include_prereleases)](https://github.com/open-telemetry/opentelemetry-demo/graphs/commit-activity)
-[![Downloads](https://img.shields.io/docker/pulls/otel/demo)](https://hub.docker.com/r/otel/demo)
-[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg?color=red)](https://github.com/open-telemetry/opentelemetry-demo/blob/main/LICENSE)
-[![Integration Tests](https://github.com/open-telemetry/opentelemetry-demo/actions/workflows/run-integration-tests.yml/badge.svg)](https://github.com/open-telemetry/opentelemetry-demo/actions/workflows/run-integration-tests.yml)
-[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/opentelemetry-demo)](https://artifacthub.io/packages/helm/opentelemetry-helm/opentelemetry-demo)
-[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/9247/badge)](https://www.bestpractices.dev/en/projects/9247)
+---
+[Project overview](https://github.com/I-am-nk/ultimate-devops-project-demo/blob/main/Project%20Overview.md)
 
-## Welcome to the OpenTelemetry Astronomy Shop Demo
+---
 
-This repository contains the OpenTelemetry Astronomy Shop, a microservice-based
-distributed system intended to illustrate the implementation of OpenTelemetry in
-a near real-world environment.
+## Project Architecture
 
-Our goals are threefold:
+![new1](https://github.com/user-attachments/assets/23c24930-9523-4a61-aea1-e01eae6553ef)
 
-- Provide a realistic example of a distributed system that can be used to
-  demonstrate OpenTelemetry instrumentation and observability.
-- Build a base for vendors, tooling authors, and others to extend and
-  demonstrate their OpenTelemetry integrations.
-- Create a living example for OpenTelemetry contributors to use for testing new
-  versions of the API, SDK, and other components or enhancements.
+---
+### 1. ☁️ AWS Infrastructure (Terraform Provisioned)
+- **EC2 Instance**: Required for accessing EKS and AWS CLI.  
+- **Backend for Terraform (S3 & DynamoDB)**:  
+  Stores state files in S3 and uses DynamoDB for state locking to ensure collaboration.  
+- **Amazon EKS (Elastic Kubernetes Service)**:  
+  Fully managed Kubernetes cluster with auto-healing and auto-scaling features. Used to deploy our applications with continuous deployment support.  
+- **Amazon VPC (Virtual Private Cloud)**:  
+  Provides secure VPC with public/private subnets, route tables, and isolated networking for security.  
+- **Amazon Route53**:  
+  Used for DNS and routing traffic to our domain (e.g., [https://iamnkdevopseng.shop](https://iamnkdevopseng.shop)).  
+---
+### 2. 💻 Kubernetes Environment
+- **EKS Cluster**: Managed Kubernetes service for deploying and managing workloads.  
+- **Ingress Resource**: Exposes the application publicly.  
+---
+### 3. ⚙️ GitHub Actions (CI/CD Integration)
+- Automates the build, test, Docker image creation, and manifest update process.  
+- Pipeline Stages:  
+  1. **Build** → Checkout code, setup Go, install dependencies, build services, and run unit tests.  
+  2. **Code Quality** → Runs `golangci-lint` for linting and code quality checks.  
+  3. **Docker** → Builds and pushes Docker images to Docker Hub.  
+  4. **Update Manifests** → Updates Kubernetes manifests with new image tags and pushes them to the repo.  
+---
+### 4. 🔁 ArgoCD (Continuous Deployment)
+- Continuously syncs Kubernetes manifests from GitHub.  
+- Ensures that the application is always deployed with the latest version on EKS.  
 
-We've already made [huge
-progress](https://github.com/open-telemetry/opentelemetry-demo/blob/main/CHANGELOG.md),
-and development is ongoing. We hope to represent the full feature set of
-OpenTelemetry across its languages in the future.
+---
 
-If you'd like to help (**which we would love**), check out our [contributing
-guidance](./CONTRIBUTING.md).
+## ✅ Prerequisites
+- AWS account with required IAM permissions  
+- Docker, AWS CLI, Terraform & Git installed locally  
+- EKS Cluster (provisioned via Terraform)  
 
-If you'd like to extend this demo or maintain a fork of it, read our
-[fork guidance](https://opentelemetry.io/docs/demo/forking/).
+---
 
-## Quick start
+## 📁 Project Structure
+```
+.
+├── .github/               # GitHub Actions & CI configs
+├── ArgoCD/                # ArgoCD set up documentation  
+├── internal/              # Internal tools/scripts
+├── kubernetes/            # Kubernetes manifests for all services
+├── pb/                    # Protocol buffers
+├── src/                   # Source code of all services
+├── test/                  # Testing configs
+├── CHANGELOG.md
+├── CONTRIBUTING.md
+├── LICENSE
+├── Makefile
+├── README.md
+├── docker-compose.yml
+├── buildkitd.toml
+├── package.json
+└── other configs (.env, renovate.json5, etc.)
+```
 
-You can be up and running with the demo in a few minutes. Check out the docs for
-your preferred deployment method:
+---
 
-- [Docker](https://opentelemetry.io/docs/demo/docker_deployment/)
-- [Kubernetes](https://opentelemetry.io/docs/demo/kubernetes_deployment/)
+## 🧱 Project Components
 
-## Documentation
+### 🚀 Terraform (Infrastructure as Code)
+Automates provisioning of:  
+- VPC, subnets, internet gateway  
+- EKS Cluster  
+- S3 bucket & DynamoDB for state management
 
-For detailed documentation, see [Demo Documentation][docs]. If you're curious
-about a specific feature, the [docs landing page][docs] can point you in the
-right direction.
+📄 [Terraform README](https://github.com/I-am-nk/ultimate-devops-project-terraform/blob/main/README.md)
 
-## Demos featuring the Astronomy Shop
+---
+### 🐳 Docker Compose
+- Runs the project locally with a single `docker-compose.yml` file.  
+- Helps test the application before deploying.
 
-We welcome any vendor to fork the project to demonstrate their services and
-adding a link below. The community is committed to maintaining the project and
-keeping it up to date for you.
+📄 [Docker Compose README](https://github.com/I-am-nk/ultimate-devops-project-demo/blob/main/local-setup-readme.md)
 
-|                           |                |                                  |
-|---------------------------|----------------|----------------------------------|
-| [AlibabaCloud LogService] | [Elastic]      | [OpenSearch]                     |
-| [AppDynamics]             | [Google Cloud] | [Sentry]                         |
-| [Aspecto]                 | [Grafana Labs] | [ServiceNow Cloud Observability] |
-| [Axiom]                   | [Guance]       | [Splunk]                         |
-| [Axoflow]                 | [Honeycomb.io] | [Sumo Logic]                     |
-| [Azure Data Explorer]     | [Instana]      | [TelemetryHub]                   |
-| [Coralogix]               | [Kloudfuse]    | [Teletrace]                      |
-| [Dash0]                   | [Liatrio]      | [Tracetest]                      |
-| [Datadog]                 | [Logz.io]      | [Uptrace]                        |
-| [Dynatrace]               | [New Relic]    |                                  |
+---
+### ☸️ Kubernetes (Container Orchestration)
+- Deployments, Services, Ingress, and LoadBalancer services.  
+- Service Account setup.  
+- Manifests are automatically updated by GitHub Actions.
 
-## Contributing
+📄 [Kubernetes README →](./kubernetes/README.md)
+ 
+  
+  ---
+### 🚀 ArgoCD (GitOps Continuous Deployment)
+- Auto-syncs Kubernetes manifests from GitHub.  
+- Deploys the app to the EKS cluster continuously.  
 
-To get involved with the project see our [CONTRIBUTING](CONTRIBUTING.md)
-documentation. Our [SIG Calls](CONTRIBUTING.md#join-a-sig-call) are every other
-Monday at 8:30 AM PST and anyone is welcome.
+📄 [ArgoCD README →](./ArgoCD/README.md)
 
-## Project leadership
+---
+### 🛠️ GitHub Actions (CI/CD)
+Defines the pipeline with:  
+- Code checkout  
+- Build & push Docker images  
+- Code quality checks  
+- Kubernetes manifest updates
 
-[Maintainers](https://github.com/open-telemetry/community/blob/main/guides/contributor/membership.md#maintainer)
-([@open-telemetry/demo-maintainers](https://github.com/orgs/open-telemetry/teams/demo-maintainers)):
+📄 [Github Actions README →](https://github.com/I-am-nk/ultimate-devops-project-demo/blob/main/GitHub%20Actions%20Readme.md))
 
-- [Juliano Costa](https://github.com/julianocosta89), Datadog
-- [Mikko Viitanen](https://github.com/mviitane), Dynatrace
-- [Pierre Tessier](https://github.com/puckpuck), Honeycomb
+---
 
-[Approvers](https://github.com/open-telemetry/community/blob/main/guides/contributor/membership.md#approver)
-([@open-telemetry/demo-approvers](https://github.com/orgs/open-telemetry/teams/demo-approvers)):
+## 👨‍💻 Author
+**Nandkishor Khandare**  
+Cloud & DevOps / SRE Engineer  
 
-- [Cedric Ziel](https://github.com/cedricziel) Grafana Labs
-- [Penghan Wang](https://github.com/wph95), AppDynamics
-- [Reiley Yang](https://github.com/reyang), Microsoft
-- [Roger Coll](https://github.com/rogercoll), Elastic
-- [Ziqi Zhao](https://github.com/fatsheep9146), Alibaba
-
-Emeritus:
-
-- [Austin Parker](https://github.com/austinlparker)
-- [Carter Socha](https://github.com/cartersocha)
-- [Michael Maxwell](https://github.com/mic-max)
-- [Morgan McLean](https://github.com/mtwo)
-
-### Thanks to all the people who have contributed
-
-[![contributors](https://contributors-img.web.app/image?repo=open-telemetry/opentelemetry-demo)](https://github.com/open-telemetry/opentelemetry-demo/graphs/contributors)
-
-[docs]: https://opentelemetry.io/docs/demo/
-
-<!-- Links for Demos featuring the Astronomy Shop section -->
-
-[AlibabaCloud LogService]: https://github.com/aliyun-sls/opentelemetry-demo
-[AppDynamics]: https://www.appdynamics.com/blog/cloud/how-to-observe-opentelemetry-demo-app-in-appdynamics-cloud/
-[Aspecto]: https://github.com/aspecto-io/opentelemetry-demo
-[Axiom]: https://play.axiom.co/axiom-play-qf1k/dashboards/otel.traces.otel-demo-traces
-[Axoflow]: https://axoflow.com/opentelemetry-support-in-more-detail-in-axosyslog-and-syslog-ng/
-[Azure Data Explorer]: https://github.com/Azure/Azure-kusto-opentelemetry-demo
-[Coralogix]: https://coralogix.com/blog/configure-otel-demo-send-telemetry-data-coralogix
-[Dash0]: https://github.com/dash0hq/opentelemetry-demo
-[Datadog]: https://docs.datadoghq.com/opentelemetry/guide/otel_demo_to_datadog
-[Dynatrace]: https://www.dynatrace.com/news/blog/opentelemetry-demo-application-with-dynatrace/
-[Elastic]: https://github.com/elastic/opentelemetry-demo
-[Google Cloud]: https://github.com/GoogleCloudPlatform/opentelemetry-demo
-[Grafana Labs]: https://github.com/grafana/opentelemetry-demo
-[Guance]: https://github.com/GuanceCloud/opentelemetry-demo
-[Honeycomb.io]: https://github.com/honeycombio/opentelemetry-demo
-[Instana]: https://github.com/instana/opentelemetry-demo
-[Kloudfuse]: https://github.com/kloudfuse/opentelemetry-demo
-[Liatrio]: https://github.com/liatrio/opentelemetry-demo
-[Logz.io]: https://logz.io/learn/how-to-run-opentelemetry-demo-with-logz-io/
-[New Relic]: https://github.com/newrelic/opentelemetry-demo
-[OpenSearch]: https://github.com/opensearch-project/opentelemetry-demo
-[Sentry]: https://github.com/getsentry/opentelemetry-demo
-[ServiceNow Cloud Observability]: https://docs.lightstep.com/otel/quick-start-operator#send-data-from-the-opentelemetry-demo
-[Splunk]: https://github.com/signalfx/opentelemetry-demo
-[Sumo Logic]: https://www.sumologic.com/blog/common-opentelemetry-demo-application/
-[TelemetryHub]: https://github.com/TelemetryHub/opentelemetry-demo/tree/telemetryhub-backend
-[Teletrace]: https://github.com/teletrace/opentelemetry-demo
-[Tracetest]: https://github.com/kubeshop/opentelemetry-demo
-[Uptrace]: https://github.com/uptrace/uptrace/tree/master/example/opentelemetry-demo
+## 📬 **Contact**: 
+[LinkedIn](https://www.linkedin.com/in/nandkishor-khandare-616492215/) | [Email](nandkishor.k6e@gmail.com) | [Twitter (X)](https://x.com/devops_nk)
