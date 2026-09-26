@@ -8,7 +8,7 @@ metadata:
 spec:
   ingressClassName: alb
   rules:
-    - host: rajeshmrkeng.shop
+    - host: www.rajeshmrkeng.shop
       http:
         paths:
           - path: "/"
